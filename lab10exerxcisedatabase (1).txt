@@ -1,0 +1,475 @@
+ EXERCISE 1
+
+DECLARE
+
+leap_year NUMBER(5) := &leap_year;
+lv_remainder1 NUMBER(5,1);
+lv_remainder2 NUMBER(5,1);
+lv_remainder3 NUMBER(5,1);
+
+BEGIN
+
+lv_remainder1 := MOD(leap_year,4);
+lv_remainder2 := MOD(leap_year,100);
+lv_remainder3 := MOD(leap_year,400);
+
+IF ((lv_remainder1=0 AND lv_remainder2 <>0) OR lv_remainder3=0) THEN 
+DBMS_OUTPUT.PUT_LINE(leap_year || ' is a leap year');
+ELSE
+DBMS_OUTPUT.PUT_LINE(leap_year || ' is a leap year');
+END IF;
+
+END;
+
+
+
+
+EXERCISE 2 (Use Scott Schema Database in second solution) 
+
+DECLARE
+
+sal NUMBER(7,2);
+name VARCHAR2(15);
+
+BEGIN
+sal := 1000;
+name :='Maren';
+IF sal<3000 THEN 
+sal:=sal+500;
+DBMS_OUTPUT.PUT_LINE(name ||'''s salary updated');
+ELSE DBMS_OUTPUT.PUT_LINE(name ||' earns ' || sal);
+END IF; 
+
+END;
+
+
+--ANOTHER SOLUTION--
+
+
+DECLARE
+
+lv_sal emp.sal%TYPE;
+name emp.ename%TYPE:= '&name';
+
+BEGIN
+
+SELECT sal INTO lv_sal FROM emp WHERE ename='name';
+IF lv_sal<3000 THEN 
+UPDATE emp
+SET sal= sal+500
+WHERE ename='name';
+DBMS_OUTPUT.PUT_LINE(name ||''s salary updated');
+ELSE
+DBMS_OUTPUT.PUT_LINE(name ||' earns ' || lv_sal);
+END IF; 
+
+END;
+
+
+
+
+EXERCISE 3
+
+CREATE TABLE temp (
+num_store NUMBER(7,2),
+char_store VARCHAR2(35),
+date_store DATE); 
+
+
+DECLARE
+
+lv_message VARCHAR2(35);
+lv_date_written DATE;
+
+BEGIN
+
+lv_message := 'This is my first PL/SQL program';
+lv_date_written := SYSDATE;
+INSERT INTO temp (char_store,date_store)
+VALUES (lv_message,lv_date_written);
+
+END;
+
+SELECT * FROM temp;
+
+
+
+
+EXERCISE 4
+
+DECLARE
+
+lv_count NUMBER(2);
+department_number dept.deptno%TYPE:=30;
+
+BEGIN
+
+SELECT COUNT(*)
+INTO lv_count
+FROM emp
+WHERE deptno=30;
+DBMS_OUTPUT.PUT_LINE(lv_count||' employee(s) work for department number ' || department_number);
+
+END;
+
+
+EXERCISE 5
+
+DECLARE
+
+salary NUMBER(7,3):= &salary;
+lv_bonus NUMBER(5,3);
+lv_annual_salary NUMBER(10,3);
+
+BEGIN
+
+lv_annual_salary:= salary *12;
+IF lv_annual_salary>=20000 THEN lv_bonus := 2000;
+ELSIF (lv_annual_salary>=10000 AND lv_annual_salary<=19999) THEN lv_bonus := 1000;
+ELSE lv_bonus := 500;
+END IF;
+DBMS_OUTPUT.PUT_LINE('The bonus is $ ' || lv_bonus);
+
+END;
+
+
+
+
+EXERCISE 6
+
+
+--IF statements--
+
+DECLARE
+ lv_total NUMBER(6,2):=567;
+ lv_rating VARCHAR2(4);
+ lv_name VARCHAR2(15):= 'Maren';
+ 
+BEGIN
+ 
+  IF lv_total > 200 THEN
+    lv_rating := 'HIGH';       
+  elsif lv_total > 100 then
+    lv_rating := 'MID';       
+  else
+    lv_rating := 'LOW';
+  END IF; 
+   DBMS_OUTPUT.PUT_LINE('Shopper '||lv_name||' is rated '||lv_rating);
+END;
+
+
+--CASE statements--
+
+DECLARE
+ lv_total NUMBER(6,2):=567;
+ lv_rating VARCHAR2(4);
+ lv_name VARCHAR2(15):= 'Maren';
+ 
+BEGIN
+
+CASE
+    when lv_total > 200 then
+    lv_rating := 'HIGH';     
+    when lv_total > 100 then
+    lv_rating := 'MID';
+    else
+    lv_rating := 'LOW';      
+  END CASE;
+DBMS_OUTPUT.PUT_LINE('Shopper '||lv_name||' is rated '||lv_rating);
+END;
+
+
+
+
+EXERCISE 7
+
+
+DECLARE
+ lv_total NUMBER(6,2):=567;
+ lv_rating VARCHAR2(4);
+ lv_name VARCHAR2(15):= 'Maren';
+ 
+BEGIN
+
+CASE
+    when lv_total > 200 then
+    lv_rating := 'HIGH';     
+    when lv_total > 100 then
+    lv_rating := 'MID';
+    else
+    lv_rating := 'LOW';      
+  END CASE;
+DBMS_OUTPUT.PUT_LINE('Shopper '||lv_name||' is rated '||lv_rating);
+END;
+
+
+
+
+EXERCISE 8
+
+DECLARE
+
+price NUMBER(4,2) := 11.25;
+amount NUMBER(6,2) := 215.81;
+items NUMBER(1) := 0;
+
+BEGIN
+
+LOOP
+EXIT WHEN amount<((items+1)*price);
+items := items + 1;
+END LOOP;
+DBMS_OUTPUT.PUT_LINE('Amount is '||amount||', price of each item is '||price || ', number of items you can buy is ' || items || ', that cost ' || items*price || ' in total.');
+
+END;
+
+
+
+EXERCISE 9
+
+DECLARE
+
+  membership CHAR(1);
+  items NUMBER(2);
+  shipping NUMBER(4,2);
+
+BEGIN
+
+  membership := 'N';
+  items := 11;
+
+  IF items <= 0 THEN
+    shipping := 0;
+  ELSIF membership = 'Y' and  items > 10 THEN
+    shipping := 9.00;
+  ELSIF membership = 'Y' and items in (7, 8, 9, 10) THEN
+    shipping := 7.00;
+  ELSIF membership = 'Y' and items in (4, 5, 6) THEN
+    shipping := 5.00;
+  ELSIF membership = 'Y' and items in (1, 2, 3) THEN
+    shipping := 3.00;
+  ELSIF membership = 'N' and  items > 10 THEN
+    shipping := 12.00;
+  ELSIF membership = 'N' and items in (7, 8, 9, 10) THEN
+    shipping := 10.00;
+  ELSIF membership = 'N' and items in (4, 5, 6) THEN
+    shipping := 7.50;
+  ELSE
+    shipping := 5.00;
+  END IF;
+
+DBMS_OUTPUT.PUT_LINE('Member: '||membership);
+DBMS_OUTPUT.PUT_LINE('Items: '||items);
+DBMS_OUTPUT.PUT_LINE('Shipping cost: '||shipping);
+
+END;
+
+
+
+
+
+EXERCISE 10
+
+DECLARE
+
+lv_rental_number NUMBER(3):=7;
+lv_ranking VARCHAR2(15);
+
+BEGIN
+
+IF lv_rental_number>35 THEN lv_ranking:= 'High';
+ELSIF lv_rental_number>=21 THEN lv_ranking:= 'Mid';
+ELSIF lv_rental_number>=5 THEN lv_ranking:= 'Low';
+ELSE lv_ranking:= 'Dump';
+END IF;
+
+DBMS_OUTPUT.PUT_LINE('Number of rentals: '||lv_rental_number );
+DBMS_OUTPUT.PUT_LINE('Rental Rating: '||lv_ranking );
+
+END;
+
+
+
+EXERCISE 11
+
+DECLARE
+
+  membership CHAR(1);
+  items NUMBER(2);
+  shipping NUMBER(4,2);
+
+BEGIN
+
+  membership := 'N';
+  items := 11;
+
+  IF items <= 0 THEN
+    shipping := 0;
+  ELSIF membership = 'Y' and  items > 10 THEN
+    shipping := 9.00;
+  ELSIF membership = 'Y' and items in (7, 8, 9, 10) THEN
+    shipping := 7.00;
+  ELSIF membership = 'Y' and items in (4, 5, 6) THEN
+    shipping := 5.00;
+  ELSIF membership = 'Y' and items in (1, 2, 3) THEN
+    shipping := 3.00;
+  ELSIF membership = 'N' and  items > 10 THEN
+    shipping := 12.00;
+  ELSIF membership = 'N' and items in (7, 8, 9, 10) THEN
+    shipping := 10.00;
+  ELSIF membership = 'N' and items in (4, 5, 6) THEN
+    shipping := 7.50;
+  ELSE
+    shipping := 5.00;
+  END IF;
+
+DBMS_OUTPUT.PUT_LINE('Member: '||membership);
+DBMS_OUTPUT.PUT_LINE('Items: '||items);
+DBMS_OUTPUT.PUT_LINE('Shipping cost: '||shipping);
+
+END;
+
+
+
+
+EXERCISE 13
+
+
+DECLARE
+  lv_ship_date bb_basketstatus.dtstage%TYPE;
+  lv_shipper_txt bb_basketstatus.shipper%TYPE;
+  lv_ship_num bb_basketstatus.shippingnum%TYPE;
+  lv_notes bb_basketstatus.notes%TYPE;
+  bask_num bb_basketstatus.idbasket%TYPE := &bask_num;
+
+BEGIN
+  SELECT dtstage, shipper, shippingnum
+   INTO lv_ship_date, lv_shipper_txt, lv_ship_num
+   FROM bb_basketstatus
+   WHERE idbasket = bask_num
+    AND idstage = 5;
+  DBMS_OUTPUT.PUT_LINE('Date Shipped: '||lv_ship_date);
+  DBMS_OUTPUT.PUT_LINE('Shipper: '||lv_shipper_txt);
+  DBMS_OUTPUT.PUT_LINE('Shipping #: '||lv_ship_num);
+  DBMS_OUTPUT.PUT_LINE('Notes: '||lv_notes);
+END;
+
+
+
+
+
+EXERCISE 14
+
+DECLARE
+ lv_total_num NUMBER(6,2);
+ lv_rating_txt VARCHAR2(4);
+ shop_num bb_basket.idshopper%TYPE := &shop_num;
+ 
+BEGIN
+ SELECT SUM(total)
+  into lv_total_num 
+  FROM bb_basket
+  WHERE idShopper = :shop_num 
+    AND orderplaced = 1
+  GROUP BY idshopper;
+  IF lv_total_num > 200 THEN
+    lv_rating_txt := 'HIGH';       
+  elsif lv_total_num > 100 then
+    lv_rating_txt := 'MID';       
+  else
+    lv_rating_txt := 'LOW';
+  END IF; 
+   DBMS_OUTPUT.PUT_LINE('Shopper '||shop_num ||' is rated '||lv_rating_txt);
+END;
+
+
+
+
+EXERCISE 15
+
+DECLARE
+ lv_total_num NUMBER(6,2);
+ lv_rating_txt VARCHAR2(4);
+ lv_shop_num bb_basket.idshopper%TYPE := &shop_num;
+BEGIN
+ SELECT SUM(total)
+  into lv_total_num
+  FROM bb_basket
+  WHERE idshopper = shop_num
+    AND orderplaced = 1
+  GROUP BY idshopper; 
+  CASE
+    WHEN lv_total_num > 200 THEN
+    lv_rating_txt := 'HIGH';     
+    WHEN lv_total_num > 100 THEN
+    lv_rating_txt := 'MID';
+    ELSE
+    lv_rating_txt := 'LOW';      
+  END CASE;
+   DBMS_OUTPUT.PUT_LINE('Shopper '||shop_num||' is rated '||lv_rating_txt);
+END;
+
+
+
+
+
+EXERCISE 16
+
+
+DECLARE
+
+  running_total NUMBER(4) := 0;
+  product_cost NUMBER(3);
+  i NUMBER(2) := 0;
+  product_id NUMBER(2):= &product_id;
+  total_spending NUMBER(7,3) := &total_spending;
+
+
+BEGIN
+
+  SELECT price
+    INTO product_cost
+    FROM bb_product
+    WHERE idproduct = :product_id;
+
+  WHILE :total_spending > (running_total + product_cost) LOOP
+    running_total := running_total + product_cost;
+    i := i + 1;
+  END LOOP
+
+DBMS_OUTPUT.PUT_LINE('Items number: '|| i || ' Item price: ' || product_cost || ' Total price: ' || running_total || ' Your initial balance: '|| total_spending);
+
+END;
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
